@@ -1,41 +1,49 @@
 #include "sort.h"
-
 /**
- * shell_sort - uses knuths sequence to sort array
- * @array: ref to array
- * @size: size of array
- * Return: nothing
+ * shell_sort - Function for shell sort knuth sequence
+ * @array: array to sort
+ * @size: size of the array
  */
-
 void shell_sort(int *array, size_t size)
 {
-	size_t in;
-	size_t out;
-	int val;
-	size_t  interval;
-	int i = 0;
+	size_t gap = 1;
+	size_t i, j;
 
-	while (interval <= size / 3)
-		interval = interval * 3 + 1;
+	if (array == NULL || size < 2)
+		return;
 
-	while (interval > 0)
+	while (gap <= size / 3)
+		gap = gap * 3 + 1;
+
+	while (gap >= 1)
 	{
-
-		for (out = interval; out < size; out++)
+		for (i = 0; i < gap; i++)
 		{
-			val = array[out];
-			in = out;
-
-			while (in > interval - 1 && array[in - interval] >= val)
+			for (j = i; j < size - gap; j += gap)
 			{
-				array[in] = array[in - interval];
-				in -= interval;
+				while (array[j] > array[j + gap])
+				{
+					swap(&array[j], &array[j + gap]);
+					if (j >= gap)
+						j = j -	gap;
+					else
+						break;
+				}
 			}
-			array[in] = val;
-
 		}
-		interval = (interval - 1) / 3;
-		i++;
+		gap = (gap - 1) / 3;
+		print_array(array, size);
 	}
-	print_array(array, size);
+}
+/**
+ * swap - function that swaps integers
+ * @a: first integer
+ * @b: second integer
+ */
+
+void swap(int *a, int *b)
+{
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
