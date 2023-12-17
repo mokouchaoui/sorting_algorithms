@@ -1,101 +1,63 @@
 #include "sort.h"
 
 /**
- * quick_sort - Function that sorts an array based on
- * quick sort algorithm
- * @array: Array to be sorted
+ * swap - Swap two values on an array
+ * @array: Array to swap
+ * @a: First index to swap
+ * @b: Second index to swap
+ */
+void swap(int *array, int a, int b)
+{
+	int temp = array[a];
+
+	array[a] = array[b];
+	array[b] = temp;
+}
+
+/**
+ * quick_recursion - Sorts using recursion
+ * @array: Array to sort
+ * @start: Start index
+ * @end: End index
  * @size: Size of array
- * Return: 0
+ */
+void quick_recursion(int *array, int start, int end, size_t size)
+{
+	long int partitionIndex = start - 1, i;
+
+	if (start < end)
+	{
+		for (i = start; i < end; i++)
+		{
+			if (array[i] <= array[end])
+			{
+				partitionIndex++;
+				if (partitionIndex != i)
+				{
+					swap(array, partitionIndex, i);
+					print_array(array, size);
+				}
+			}
+		}
+		if (partitionIndex + 1 != end)
+		{
+			swap(array, partitionIndex + 1, end);
+			print_array(array, size);
+		}
+		quick_recursion(array, start, partitionIndex, size);
+		quick_recursion(array, partitionIndex + 2, end, size);
+	}
+}
+
+/**
+ * quick_sort - Sorts an array of integers in ascending
+ * order using the Quick sort algorithm
+ * @array: Array to sort
+ * @size: Size of array
  */
 void quick_sort(int *array, size_t size)
 {
-	size_t pivot;
-
 	if (!array || size < 2)
 		return;
-
-	print_sort(array, size, 1);
-
-	/* partition and get pivot index */
-	pivot = partition(array, size);
-
-	/* repeat for left of index */
-	quick_sort(array, pivot);
-	/* repeat for index and right */
-	quick_sort(array + pivot, size - pivot);
-}
-
-/**
- * swap - Function that swaps two values
- *
- * @a: Fisrt value
- * @b: Second value
- * Return: 0
- */
-void swap(int *a, int *b)
-{
-	int tmp;
-
-	tmp = *b;
-	*b = *a;
-	*a = tmp;
-}
-
-/**
- * partition - Function that sets the pivot for quick_sort
- *
- * @array: Array to partition
- * @size: Size of array
- * Return: (i + 1)
- */
-size_t partition(int array[], size_t size)
-{
-	int pivot;
-	size_t i = -1;
-	size_t j;
-
-	if (!array || size < 2)
-		return (0);
-
-	pivot = array[size - 1];
-
-	for (j = 0; j < size - 1; j++)
-	{
-		if (array[j] <= pivot)
-		{
-			i++;
-			if (i != j)
-			{
-				swap(&array[i], &array[j]);
-				print_sort(array, size, 0);
-			}
-		}
-	}
-	if (i + 1 != size - 1)
-	{
-		swap(&array[i + 1], &array[size - 1]);
-		print_sort(array, size, 0);
-	}
-	return (i + 1);
-}
-
-/**
- * print_sort - Function that prints as it should
- * @array: Array to be printed
- * @size: Size of array
- * @init: Should initialize array
- * Return: 0
- */
-void print_sort(int array[], size_t size, int init)
-{
-	static int *p = (void *)0;
-	static size_t s;
-
-	if (!p && init)
-	{
-		p = array;
-		s = size;
-	}
-	if (!init)
-		print_array(p, s);
+	quick_recursion(array, 0, size - 1, size);
 }
